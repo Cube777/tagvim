@@ -1,11 +1,6 @@
 #! /bin/bash
 
-CACHE="$HOME/.cache/tagvim"
-
-# ctags tag generation arguments
-KINDS="p"
-FIELDS="iaS"
-EXTRA="q"
+source vars.sh
 
 # Set up standard dirs
 if [ ! -d "$CACHE" ]; then
@@ -25,25 +20,15 @@ if [ ! -d "$CACHE" ]; then
 		mv temp $i
 	done
 	echo "-->Generating tags for stdcpp"
-	cd "$CACHE"
-	mkdir stdcpp
-	cd cpp_src
+	mkdir "$CACHE/local"
+	mkdir -p "$CACHE/system/stdcpp"
+	cd "$CACHE/cpp_src"
 	for i in *; do
 		ctags --c++-kinds=+"$KINDS" --fields=+"$FIELDS" --extra=+"$EXTRA" \
-			-f "$CACHE/stdcpp/$i" "$i"
+			-f "$CACHE/system/stdcpp/$i" "$i"
 	done
-	cd "$CACHE"
-	rm cpp_src.tar.bz2
-	touch filelist
+	rm "$CACHE/cpp_src.tar.bz2"
+	echo "/stdcpp" > filelist
 fi
 
-for k in $(cat "$CACHE/filelist"); do
-	for i in $(find "$k" -not -type d); do
-		mkdir -p "$CACHE$(dirname "$i")"
-		if [ ! -f "$CACHE$i" ] || [[ "$i" =~ $1* ]]; then
-			echo "Generating tags for $i"
-			ctags --c++-kinds=+"$KINDS" --fields=+"$FIELDS" --extra=+"$EXTRA" \
-				-f "$CACHE/$i" "$i"
-		fi
-	done
-done
+
