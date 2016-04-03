@@ -15,6 +15,15 @@ if [ ! -d "$CACHE" ]; then
 	curl -L 'http://www.vim.org/scripts/download_script.php?src_id=9178' > "$CACHE/cpp_src.tar.bz2"
 	echo "-->Extracting C++ sources"
 	tar xf "$CACHE/cpp_src.tar.bz2" -C "$CACHE"
+	echo "-->Modifying sources"
+	cd "$CACHE/cpp_src"
+	rm *.tcc
+	sed -i 's/bits\///g' *
+	for i in *; do
+		grep -E -v '#include.*[^\s\/]/[^\s\/]' $i | \
+			grep -E -v "#include.*tcc"> temp
+		mv temp $i
+	done
 	echo "-->Generating tags for stdcpp"
 	cd "$CACHE"
 	mkdir stdcpp
@@ -24,7 +33,6 @@ if [ ! -d "$CACHE" ]; then
 			-f "$CACHE/stdcpp/$i" "$i"
 	done
 	cd "$CACHE"
-	rm -r cpp_src
 	rm cpp_src.tar.bz2
 	touch filelist
 fi
