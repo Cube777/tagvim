@@ -28,7 +28,7 @@ if [ ! -d "$CACHE" ]; then
 			-f "$CACHE/system/stdcpp/$i" "$i"
 	done
 	rm "$CACHE/cpp_src.tar.bz2"
-	echo "/stdcpp" > filelist
+	echo "/stdcpp" > "$CACHE/filelist"
 fi
 
 

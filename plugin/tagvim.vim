@@ -1,4 +1,5 @@
 function! SetTags()
+	let l:sdir = expand('%:p:h')
 	pyfile parse_includes.py
 endfunc
 
