@@ -6,11 +6,12 @@ endfunc
 function! UpdateTags()
 	if &filetype != "cpp"
 		finish
+	endif
 	let cache = $HOME . "/.cache/tagvim/"
 	let plugloc = expand('%:p:h')
 	call system('echo "' . expand('%:p') . '" >> ' . cache . 'filelist')
 	call system("awk '!seen[$0]++' " . cache . 'filelist')
-	call system(plugloc . '/setup.sh')
+	call system(plugloc . '/gentags.sh')
 endfunc
 
 augroup tagvim
