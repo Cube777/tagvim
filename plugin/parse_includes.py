@@ -6,6 +6,7 @@ import os
 import re
 
 sdir = vim.eval('l:sdir')
+globinclds = []
 
 def find(header, folder):
     if not os.path.exists(folder):
@@ -17,6 +18,7 @@ def includes(fname):
     content = open(fname).read().split('\n')
     incld = []
     regx = re.compile('^#include')
+    global globinclds
     for i in content:
         if re.search(regx, i) is not None:
             i.replace("#include ", "")
@@ -27,8 +29,10 @@ def includes(fname):
             while (i[e] != ">") and (i[e] != '"'):
                 e += 1
             i = i[s:e+1]
-            incld.append(i)
+            if i not in globinclds:
+                incld.append(i)
 
+    globinclds += incld
     home = os.environ['HOME']
     regx = re.compile('^' + home)
     regspec = re.compile('/stdcpp$')
@@ -52,6 +56,8 @@ def includes(fname):
                 if loc != '':
                     if re.search(regspec, k) is None:
                         loc = loc[len(cachedir + "/system"):]
+                    else:
+                        loc = cachedir + "/cpp_src/" +  os.path.basename(loc)
                     taglist.append(loc)
                     break
         else:
@@ -65,13 +71,32 @@ def includes(fname):
 
 taglist = [vim.current.buffer.name]
 
+prev = 1
 new = []
-new += includes(taglist[0])
-new = list(set(new))
-print(new)
-taglist = new
+while 1:
+    new = []
+    for i in taglist:
+        new += includes(i)
+    for i in new:
+        if i not in taglist:
+            taglist.append(i)
+    if len(taglist) == prev:
+        break
+    prev = len(taglist)
 
+cachedir = os.environ['HOME'] + '/.cache/tagvim'
+reg = re.compile('^' + os.environ['HOME'])
+regspec = re.compile('^' + cachedir + "/cpp_src")
 vim.command('set tags=""')
 for i in taglist:
-    vim.command('set tags+=' + i)
+    if re.search(reg, i) is not None:
+        if re.search(regspec, i) is None:
+            vim.command('set tags+=' + cachedir + '/local' + i)
+        else:
+            vim.command('set tags+=' + cachedir + '/system/stdcpp/' +
+                    os.path.basename(i))
+
+    else:
+        vim.command('set tags+=' + cachedir + '/system' + i)
+
 
