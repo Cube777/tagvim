@@ -11,7 +11,7 @@ def find(header, folder):
     if not os.path.exists(folder):
         return ''
     loc = subprocess.check_output(['find', folder, '-name', header])
-    return loc
+    return loc[:-1]
 
 def includes(fname):
     content = open(fname).read().split('\n')
@@ -49,17 +49,16 @@ def includes(fname):
         if s == "<":
             for k in system:
                 loc = find(os.path.basename(i), cachedir + '/system' + k)
-                print(i)
                 if loc != '':
                     if re.search(regspec, k) is None:
-                        loc.replace(cachedir + "/system", "")
+                        loc = loc[len(cachedir + "/system"):]
                     taglist.append(loc)
                     break
         else:
             for k in local:
                 loc = find(os.path.basename(i), cachedir + '/local' + k)
                 if loc != '':
-                    loc.replace(cachedir + "/local", "")
+                    loc = loc[len(cachedir + "/local"):]
                     taglist.append(loc)
                     break
     return taglist
@@ -67,14 +66,10 @@ def includes(fname):
 taglist = [vim.current.buffer.name]
 
 new = []
-while 1:
-    new = []
-    for i in taglist:
-        new += includes(i)
-    new = set(new)
-    diff = list(set(taglist) - new)
-    if len(diff) == 0:
-        break
+new += includes(taglist[0])
+new = list(set(new))
+print(new)
+taglist = new
 
 vim.command('set tags=""')
 for i in taglist:
