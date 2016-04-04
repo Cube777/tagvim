@@ -22,6 +22,7 @@ if [ ! -d "$CACHE" ]; then
 	echo "-->Generating tags for stdcpp"
 	mkdir "$CACHE/local"
 	mkdir -p "$CACHE/system/stdcpp"
+	mkdir "$CACHE/settags"
 	cd "$CACHE/cpp_src"
 	for i in *; do
 		ctags --c++-kinds=+"$KINDS" --fields=+"$FIELDS" --extra=+"$EXTRA" \

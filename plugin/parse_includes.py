@@ -88,15 +88,18 @@ cachedir = os.environ['HOME'] + '/.cache/tagvim'
 reg = re.compile('^' + os.environ['HOME'])
 regspec = re.compile('^' + cachedir + "/cpp_src")
 vim.command('set tags=""')
+newtag = ""
 for i in taglist:
     if re.search(reg, i) is not None:
         if re.search(regspec, i) is None:
-            vim.command('set tags+=' + cachedir + '/local' + i)
+            newtag = cachedir + '/local' + i
         else:
-            vim.command('set tags+=' + cachedir + '/system/stdcpp/' +
-                    os.path.basename(i))
-
+            newtag = cachedir + '/system/stdcpp/' + os.path.basename(i)
     else:
-        vim.command('set tags+=' + cachedir + '/system' + i)
+        newtag = cachedir + '/system' + i
+    if os.path.isfile(newtag):
+        vim.command("setlocal tags+=" + newtag)
+    else:
+        print(newtag + " not found")
 
 
