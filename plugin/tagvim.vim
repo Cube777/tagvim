@@ -2,8 +2,7 @@ function! CreateTaglist()
 	if &l:filetype != "cpp"
 		return
 	endif
-	let l:sdir = expand('%:p:h')
-	let plugloc = expand('%:p:h')
+	let plugloc = expand('<sfile>:p:h')
 	execute 'pyfile ' . plugloc . '/parse_includes.py'
 	let sfile = $HOME . "/.cache/tagvim/settags" . expand('%:p')
 	let tgs = &l:tags
@@ -15,7 +14,7 @@ function! UpdateTags()
 		return
 	endif
 	let cache = $HOME . "/.cache/tagvim/"
-	let plugloc = expand('%:p:h')
+	let plugloc = expand('<sfile>:p:h')
 	call system('echo "' . expand('%:p') . '" >> ' . cache . 'filelist')
 	call system(plugloc . '/gentags.sh ' . expand('%:p'))
 endfunc
@@ -33,7 +32,7 @@ endfunc
 
 function! AddTagFolder(folder)
 	let cache = $HOME . "/.cache/tagvim/"
-	let plugloc = expand('%:p:h')
+	let plugloc = expand('<sfile>:p:h')
 	execute 'silent !echo "' . a:folder . '" >> ' . cache . 'filelist'
 	execute 'silent !' . plugloc . '/gentags.sh'
 endfunc

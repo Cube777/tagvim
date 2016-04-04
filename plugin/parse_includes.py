@@ -5,7 +5,6 @@ import subprocess
 import os
 import re
 
-sdir = vim.eval('l:sdir')
 globinclds = []
 
 def find(header, folder):
