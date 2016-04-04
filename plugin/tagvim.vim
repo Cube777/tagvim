@@ -3,7 +3,8 @@ function! CreateTaglist()
 		return
 	endif
 	let l:sdir = expand('%:p:h')
-	pyfile parse_includes.py
+	let plugloc = expand('%:p:h')
+	execute 'pyfile ' . plugloc . '/parse_includes.py'
 	let sfile = $HOME . "/.cache/tagvim/settags" . expand('%:p')
 	let tgs = &l:tags
 	call writefile([tgs], sfile)
@@ -30,6 +31,12 @@ function! SetTags()
 	endif
 endfunc
 
+function! AddTagFolder(folder)
+	let cache = $HOME . "/.cache/tagvim/"
+	let plugloc = expand('%:p:h')
+	execute 'silent !echo "' . a:folder . '" >> ' . cache . 'filelist'
+	execute 'silent !' . plugloc . '/gentags.sh'
+endfunc
 
 augroup tagvim
 	autocmd!
