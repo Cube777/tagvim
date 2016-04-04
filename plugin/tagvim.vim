@@ -1,9 +1,10 @@
+let s:plugloc = expand('<sfile>:p:h')
+
 function! CreateTaglist()
 	if &l:filetype != "cpp"
 		return
 	endif
-	let plugloc = expand('<sfile>:p:h')
-	execute 'pyfile ' . plugloc . '/parse_includes.py'
+	execute 'pyfile ' . s:plugloc . '/parse_includes.py'
 	let sfile = $HOME . "/.cache/tagvim/settags" . expand('%:p')
 	let tgs = &l:tags
 	call writefile([tgs], sfile)
@@ -14,9 +15,8 @@ function! UpdateTags()
 		return
 	endif
 	let cache = $HOME . "/.cache/tagvim/"
-	let plugloc = expand('<sfile>:p:h')
 	call system('echo "' . expand('%:p') . '" >> ' . cache . 'filelist')
-	call system(plugloc . '/gentags.sh ' . expand('%:p'))
+	call system(s:plugloc . '/gentags.sh ' . expand('%:p'))
 endfunc
 
 function! SetTags()
@@ -32,9 +32,8 @@ endfunc
 
 function! AddTagFolder(folder)
 	let cache = $HOME . "/.cache/tagvim/"
-	let plugloc = expand('<sfile>:p:h')
 	execute 'silent !echo "' . a:folder . '" >> ' . cache . 'filelist'
-	execute 'silent !' . plugloc . '/gentags.sh'
+	execute 'silent !' . s:plugloc . '/gentags.sh'
 endfunc
 
 augroup tagvim
