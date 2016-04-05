@@ -30,6 +30,6 @@ if [ ! -d "$CACHE" ]; then
 	done
 	rm "$CACHE/cpp_src.tar.bz2"
 	echo "/stdcpp" > "$CACHE/filelist"
+	echo "-->Copying scripts"
+	cp gentags.sh vars.sh "$CACHE"
 fi
-
-

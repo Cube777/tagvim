@@ -1,6 +1,6 @@
 #! /bin/bash
 
-source vars.sh
+source "$(dirname ${BASH_SOURCE[0]})/vars.sh"
 
 awk '!seen[$0]++' "$CACHE/filelist" >> tmp && mv tmp "$CACHE/filelist"
 

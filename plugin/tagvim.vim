@@ -16,10 +16,10 @@ function! UpdateTags()
 	endif
 	let cache = $HOME . "/.cache/tagvim/"
 	call system('echo "' . expand('%:p') . '" >> ' . cache . 'filelist')
-	call system(s:plugloc . '/gentags.sh ' . expand('%:p'))
+	call system(cache . 'gentags.sh ' . expand('%:p'))
 endfunc
 
-function! SetTags()
+function! SetTagList()
 	let cache = $HOME . "/.cache/tagvim/settags"
 	execute 'silent !mkdir -p ' . cache . expand('%:p:h')
 	if filereadable(cache . expand('%:p'))
@@ -33,11 +33,11 @@ endfunc
 function! AddTagFolder(folder)
 	let cache = $HOME . "/.cache/tagvim/"
 	execute 'silent !echo "' . a:folder . '" >> ' . cache . 'filelist'
-	execute 'silent !' . s:plugloc . '/gentags.sh'
+	execute 'silent !' . cache . 'gentags.sh'
 endfunc
 
 augroup tagvim
 	autocmd!
 	autocmd Filetype cpp call UpdateTags()
-	autocmd Filetype cpp call SetTags()
+	autocmd Filetype cpp call SetTagList()
 augroup END
