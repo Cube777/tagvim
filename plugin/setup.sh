@@ -1,6 +1,8 @@
 #! /bin/bash
 
-source vars.sh
+sloc="$(dirname ${BASH_SOURCE[0]})"
+source "$sloc/vars.sh"
+
 
 # Set up standard dirs
 if [ ! -d "$CACHE" ]; then
@@ -30,6 +32,4 @@ if [ ! -d "$CACHE" ]; then
 	done
 	rm "$CACHE/cpp_src.tar.bz2"
 	echo "/stdcpp" > "$CACHE/filelist"
-	echo "-->Copying scripts"
-	cp gentags.sh vars.sh "$CACHE"
 fi
