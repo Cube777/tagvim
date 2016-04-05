@@ -16,7 +16,7 @@ function! UpdateTags()
 	endif
 	let cache = $HOME . "/.cache/tagvim/"
 	call system('echo "' . expand('%:p') . '" >> ' . cache . 'filelist')
-	call system(s:plugloc . '/gentags.sh ' . expand('%:p'))
+	execute '!' . s:plugloc . '/gentags.sh ' . expand('%:p')
 endfunc
 
 function! SetTagList()
