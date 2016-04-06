@@ -15,7 +15,14 @@ function! UpdateTags()
 		return
 	endif
 	let cache = $HOME . "/.cache/tagvim/"
-	call system('echo "' . expand('%:p') . '" >> ' . cache . 'filelist')
+	let tgs = split(&l:tags, ',')
+	for i in tgs
+		let i = i[ len(cache) :]
+		if i =~ '^local'
+			let i = i[5:]
+			call system('echo "' . i . '" >> ' . cache . 'filelist')
+		endif
+	endfor
 	execute 'silent !' . s:plugloc . '/gentags.sh ' . expand('%:p')
 endfunc
 
@@ -26,7 +33,8 @@ function! SetTagList()
 		 let temp = readfile(cache . expand('%:p'))
 		 let &l:tags = temp[0]
 	else
-		echo "Taglist file for this file does not exist!"
+		echo "Taglist file for this file does not exist, please call" .
+					\ "CreatTaglist()"
 	endif
 endfunc
 

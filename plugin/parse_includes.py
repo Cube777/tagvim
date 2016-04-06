@@ -36,6 +36,7 @@ def includes(fname):
     regx = re.compile('^' + home)
     regspec = re.compile('/stdcpp$')
     cachedir = home + '/.cache/tagvim'
+    regloc = re.compile('^' + cachedir)
     content = open(cachedir + '/filelist').read().split('\n')
     content = content[:-1]
     system = []
@@ -61,9 +62,16 @@ def includes(fname):
                     break
         else:
             for k in local:
-                loc = find(os.path.basename(i), cachedir + '/local' + k)
+                loc = ""
+                if os.path.isdir(k):
+                    loc = find(os.path.basename(i), cachedir + "/local" + k)
+                else:
+                    loc = os.path.abspath( os.path.dirname(k) + "/" + i )
+                    if not os.path.isfile(loc):
+                        continue
                 if loc != '':
-                    loc = loc[len(cachedir + "/local"):]
+                    if re.match(regloc, loc) is not None:
+                        loc = loc[len(cachedir + "/local"):]
                     taglist.append(loc)
                     break
     return taglist
@@ -96,9 +104,6 @@ for i in taglist:
             newtag = cachedir + '/system/stdcpp/' + os.path.basename(i)
     else:
         newtag = cachedir + '/system' + i
-    if os.path.isfile(newtag):
-        vim.command("setlocal tags+=" + newtag)
-    else:
-        print(newtag + " not found")
-
-
+    if not os.path.isfile(newtag):
+        print(newtag + " not found. Please call UpdateTags()")
+    vim.command("setlocal tags+=" + newtag)

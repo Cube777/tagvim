@@ -12,8 +12,8 @@ for k in $(cat "$CACHE/filelist"); do
 		if [[ $k =~ ^$HOME ]]; then dir="local"; fi
 		mkdir -p "$CACHE/$dir$(dirname "$i")"
 		if [ ! -f "$CACHE/$dir$i" ] || [[ "$i" =~ $1* ]]; then
-			ctags --c++-kinds=+"$KINDS" --fields=+"$FIELDS" --extra=+"$EXTRA" \
-				-f "$CACHE/$dir$i" "$i"
+			ctags --language-force=c++ --c++-kinds=+$KINDS --fields=+$FIELDS \
+				--extra=+"$EXTRA" -f "$CACHE/$dir$i" "$i"
 		fi
 	done
 done
