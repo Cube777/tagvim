@@ -1,29 +1,25 @@
 let s:plugloc = expand('<sfile>:p:h')
 
-function! CreateTaglist()
+function! CreateTagList()
 	if &l:filetype != "cpp"
 		return
 	endif
-	execute 'pyfile ' . s:plugloc . '/parse_includes.py'
-	let sfile = $HOME . "/.cache/tagvim/settags" . expand('%:p')
-	let tgs = &l:tags
-	call writefile([tgs], sfile)
+	execute 'silent !' . s:plugloc . '/gentags.sh gen ' . expand('%:p')
+	call SetTagList()
 endfunc
 
-function! UpdateTags()
+function! UpdateLocalTags()
 	if &l:filetype != "cpp"
 		return
 	endif
-	let cache = $HOME . "/.cache/tagvim/"
-	let tgs = split(&l:tags, ',')
-	for i in tgs
-		let i = i[ len(cache) :]
-		if i =~ '^local'
-			let i = i[5:]
-			call system('echo "' . i . '" >> ' . cache . 'filelist')
-		endif
-	endfor
-	execute 'silent !' . s:plugloc . '/gentags.sh ' . expand('%:p')
+	execute 'silent !' . s:plugloc . '/gentags.sh local ' . expand('%:p')
+endfunc
+
+function! ForceUpdateTags(loc)
+	if &l:filetype != "cpp"
+		return
+	endif
+	execute 'silent !' . s:plugloc . '/gentags.sh force ' . a:loc
 endfunc
 
 function! SetTagList()
@@ -41,11 +37,10 @@ endfunc
 function! AddTagFolder(folder)
 	let cache = $HOME . "/.cache/tagvim/"
 	execute 'silent !echo "' . a:folder . '" >> ' . cache . 'filelist'
-	execute 'silent !' . s:plugloc . '/gentags.sh'
 endfunc
 
 augroup tagvim
 	autocmd!
-	autocmd Filetype cpp call UpdateTags()
+	autocmd Filetype cpp call UpdateLocalTags()
 	autocmd Filetype cpp call SetTagList()
 augroup END
