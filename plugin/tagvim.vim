@@ -9,6 +9,9 @@ function! CreateTagList()
 endfunc
 
 function! UpdateLocalTags()
+	if &l:readonly
+		return
+	endif
 	if &l:filetype != "cpp"
 		return
 	endif
@@ -23,6 +26,9 @@ function! ForceUpdateTags(loc)
 endfunc
 
 function! SetTagList()
+	if &l:readonly
+		return
+	endif
 	let cache = $HOME . "/.cache/tagvim/settags"
 	execute 'silent !mkdir -p ' . cache . expand('%:p:h')
 	if filereadable(cache . expand('%:p'))
