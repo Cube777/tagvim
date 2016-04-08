@@ -45,7 +45,7 @@ for i in $incs; do
 			"$i" > /tmp/tagvim.temp
 			i="-I _GLIBCXX_NOEXCEPT /tmp/tagvim.temp"
 		fi
-		ctags --language-force=c++ --c++-kinds=+"$KINDS" --fields=+"$FIELDS" \
+		ctags --c-types=+p --c++-kinds=+"$KINDS" --fields=+"$FIELDS" \
 			--extra=+"$EXTRA" -f "$CACHE$loc" $i
 	fi
 done

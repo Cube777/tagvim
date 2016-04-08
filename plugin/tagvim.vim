@@ -45,8 +45,15 @@ function! AddTagFolder(folder)
 	execute 'silent !echo "' . a:folder . '" >> ' . cache . 'filelist'
 endfunc
 
+function! ParseNewline()
+	if v:char == ';'
+		" Parse newline
+		pass
+	endif
+endfunc
+
 augroup tagvim
 	autocmd!
 	autocmd Filetype cpp call UpdateLocalTags()
-	autocmd Filetype cpp call SetTagList()
+	autocmd InsertCharPre *.cpp call ParseNewline()
 augroup END
