@@ -43,9 +43,11 @@ for i in $incs; do
 		if [[ $i =~ ^/usr/include/c++ ]]; then
 			sed 's/namespace std _GLIBCXX_VISIBILITY(default)/namespace std/' \
 			"$i" > /tmp/tagvim.temp
-			i="-I _GLIBCXX_NOEXCEPT /tmp/tagvim.temp"
+			i="-I _GLIBCXX_NOEXCEPT --language-force=c++ /tmp/tagvim.temp"
+		else
+			i="--c-types=+p $loc"
 		fi
-		ctags --c-types=+p --c++-kinds=+"$KINDS" --fields=+"$FIELDS" \
-			--extra=+"$EXTRA" -f "$CACHE$loc" $i
+		ctags --c++-kinds=+"$KINDS" --fields=+"$FIELDS" --extra=+"$EXTRA" -f \
+		"$CACHE$loc" $i
 	fi
 done
